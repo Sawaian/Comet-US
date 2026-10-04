@@ -26,9 +26,17 @@ public class playerMovement : MonoBehaviour
         {
             transform.position += Vector3.right * speed * Time.deltaTime;
         }
-        Input.GetKeyDown(KeyCode.W);
-        
-        Input.GetKeyDown(KeyCode.S);   
+        if (Input.GetKey(KeyCode.W))
+        {
+            transform.position += Vector3.up * speed * Time.deltaTime;
+            print("up pressed");
+        }
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            transform.position += Vector3.down * speed * Time.deltaTime;
+            print("down pressed");
+        }   
         
     }
 
