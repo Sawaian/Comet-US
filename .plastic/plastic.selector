@@ -1,3 +1,4 @@
 repository "Comet US/Comet US@1374415213774@cloud"
   path "/"
-    smartbranch "/main"
+    br "/main"
+    co "/main"

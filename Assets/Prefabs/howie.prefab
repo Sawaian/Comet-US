@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1744354411976819155}
   - component: {fileID: 8202515027595787949}
   - component: {fileID: 5170084952289806206}
+  - component: {fileID: 5371166597606758672}
   m_Layer: 0
   m_Name: howie
   m_TagString: Untagged
@@ -32,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2337306405192505101}
+  - {fileID: 8191734879312561666}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8202515027595787949
@@ -46,6 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 017409b353c98b54f9389fe417abaf5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemy_1
+  projectile: {fileID: 2958744531561302009, guid: e1ce7bafb8d04224b9a05c5210644381, type: 3}
+  FireBox: {fileID: 0}
+  fireDelay: 2
+  fireSpeed: 2
+  offset: 0.5
 --- !u!54 &5170084952289806206
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -73,6 +80,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &5371166597606758672
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106240452530195949}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.1892409, z: 1}
+  m_Center: {x: 0, y: 0.09462031, z: 0}
 --- !u!1 &6843627037507422495
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,7 +112,6 @@ GameObject:
   - component: {fileID: 2337306405192505101}
   - component: {fileID: 2974309933075398758}
   - component: {fileID: 8858513015425807368}
-  - component: {fileID: 3242964066880619605}
   m_Layer: 0
   m_Name: howitzer
   m_TagString: Untagged
@@ -164,13 +191,45 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3242964066880619605
+--- !u!1 &8176390960392790599
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8191734879312561666}
+  - component: {fileID: 2725344919820758884}
+  m_Layer: 15
+  m_Name: Firebox
+  m_TagString: howitzer
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8191734879312561666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8176390960392790599}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.017, y: 0.55, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1744354411976819155}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2725344919820758884
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6843627037507422495}
+  m_GameObject: {fileID: 8176390960392790599}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -179,7 +238,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - bullet
+  - howitzer
   layers:
   - Default
   - TransparentFX
@@ -20,6 +22,8 @@ TagManager:
   - 
   - 
   - 
+  - enemy
+  - enemy_projectile
   - 
   - 
   - 
@@ -27,9 +31,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - background
   - 
   - 
   - 
