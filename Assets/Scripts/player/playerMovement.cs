@@ -34,6 +34,8 @@ public class playerMovement : MonoBehaviour
         
     }
 
+
+
     private void FixedUpdate()
     {
         

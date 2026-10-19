@@ -129,7 +129,8 @@ GameObject:
   - component: {fileID: 7206161967799930381}
   - component: {fileID: 7811953726500398543}
   - component: {fileID: 8885511893162351080}
-  m_Layer: 0
+  - component: {fileID: 2303766779787606381}
+  m_Layer: 10
   m_Name: player_ship
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -234,3 +235,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerHealth
   health: 3
+--- !u!114 &2303766779787606381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7473458900694290736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f12e95221f0398b478bd13c7eb54c508, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
