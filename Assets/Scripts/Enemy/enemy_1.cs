@@ -21,7 +21,6 @@ public class enemy_1 : MonoBehaviour
         Fire();
         
     }
-
     void Fire()
     {
         if (projectile == null)

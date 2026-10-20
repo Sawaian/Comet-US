@@ -10,6 +10,10 @@ public class boundary : MonoBehaviour
             Debug.Log("collision detected: " + other.gameObject);
             Destroy(other.gameObject);
         }
+        if (other.gameObject.CompareTag("laser"))
+        {
+            Destroy(other.gameObject);
+        }
       
     }
 }
