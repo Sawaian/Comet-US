@@ -20,7 +20,7 @@ public class Enemy_Health : MonoBehaviour
 
     public void hit(int damage)
     {
-        health -= damage;
+        current_health -= damage;
     }
 
     void Die()

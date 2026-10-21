@@ -31,8 +31,8 @@ public class enemy_1 : MonoBehaviour
 
         GameObject bullet = Instantiate(projectile);
         bullet.transform.position = FireBox.transform.position + Vector3.up * offset;
-        Debug.Log("Spawned: " + bullet.name);
-        Debug.Log("Projectile script: " + bullet.GetComponent<projectile>());
+        //Debug.Log("Spawned: " + bullet.name);
+        //Debug.Log("Projectile script: " + bullet.GetComponent<projectile>());
 
 
         Invoke("Fire", fireDelay);

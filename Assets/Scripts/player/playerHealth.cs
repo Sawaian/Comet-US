@@ -26,10 +26,10 @@ public class playerHealth : MonoBehaviour
 
     void healthCheck(int health)
     {
-        Debug.Log("Health check running");
+        
         if (health < 1) 
         {
-            Debug.Log("ship destroyed" );
+            //Debug.Log("ship destroyed" );
         }
     }
 }
