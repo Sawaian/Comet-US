@@ -13,8 +13,9 @@ public class laser : MonoBehaviour
         if (enemy != null )
         {
             Debug.Log("Enemy detected: " + other.gameObject);
-            enemy.hit(1);
+            enemy.hit(1); 
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
+       
     }
 }

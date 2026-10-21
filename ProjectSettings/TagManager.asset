@@ -8,6 +8,7 @@ TagManager:
   - howitzer
   - boundary
   - laser
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -18,9 +19,9 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Level_block
   - player_ship
-  - 
+  - laser
   - 
   - 
   - 
