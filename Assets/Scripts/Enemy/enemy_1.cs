@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class enemy_1 : MonoBehaviour
 {
+    [SerializeField] Transform pool;
     GameObject GO;
     public GameObject projectile;
     public GameObject FireBox;
@@ -12,6 +13,7 @@ public class enemy_1 : MonoBehaviour
     public float fireSpeed = 2f;
 
     public float offset = 0.5f;
+
     
     void Start()
     {
@@ -29,7 +31,7 @@ public class enemy_1 : MonoBehaviour
             return;
         }
 
-        GameObject bullet = Instantiate(projectile);
+        GameObject bullet = Instantiate(projectile,FireBox.transform, pool);
         bullet.transform.position = FireBox.transform.position + Vector3.up * offset;
         //Debug.Log("Spawned: " + bullet.name);
         //Debug.Log("Projectile script: " + bullet.GetComponent<projectile>());

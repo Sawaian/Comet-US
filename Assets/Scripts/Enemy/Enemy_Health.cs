@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Enemy_Health : MonoBehaviour
 {
+    [SerializeField] GameManager gameManager;
     public int health = 1;
     private int current_health;
     void Awake()

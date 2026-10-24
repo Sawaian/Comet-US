@@ -49,8 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 017409b353c98b54f9389fe417abaf5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemy_1
+  pool: {fileID: 0}
   projectile: {fileID: 2958744531561302009, guid: e1ce7bafb8d04224b9a05c5210644381, type: 3}
-  FireBox: {fileID: 0}
+  FireBox: {fileID: 8176390960392790599}
   fireDelay: 2
   fireSpeed: 2
   offset: 0.5
