@@ -7,7 +7,7 @@ public class boundary : MonoBehaviour
     {
         if(other.gameObject.CompareTag("bullet"))
         {
-            Debug.Log("collision detected: " + other.gameObject);
+            //Debug.Log("collision detected: " + other.gameObject);
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("laser"))

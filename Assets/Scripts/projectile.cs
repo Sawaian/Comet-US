@@ -14,8 +14,6 @@ public class projectile : MonoBehaviour
         //fetch rigidboy from GO this scrip attached
         m_Rigidbody = GetComponent<Rigidbody>();
 
-        Debug.Log("Projectile Start running!");
-
         m_Rigidbody.AddForce(Vector3.up * initVelocity, ForceMode.Impulse);
     }
 

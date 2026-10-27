@@ -3,6 +3,10 @@ using UnityEngine;
 public class playerMovement : MonoBehaviour
 {
     [SerializeField] int speed = 10;
+    [SerializeField] float negXClamp = -11.12401f;
+    [SerializeField] float posXClamp = 11.27597f;
+    [SerializeField] float posYClamp = 22.15563f;
+    [SerializeField] float negYClamp = -18f;
     private Rigidbody rb;
     private Vector3 movement;
 
