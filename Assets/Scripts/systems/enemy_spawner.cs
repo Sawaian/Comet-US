@@ -1,31 +1,58 @@
+
 using UnityEngine;
-using System.Collections.Generic;
 
 public class enemy_spawner : MonoBehaviour
 {
-    [SerializeField] Transform pool;
-    [SerializeField] GameManager gameManager;
-    public GameObject Howitzer;
-    public Vector3 spawnPos = new Vector3(-9f,-18.5f,0f);
-    public float spawn_Padding = 9f;
-   
+    [Header("References")]
+    [SerializeField] private Transform pool;
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private GameObject Howitzer;
 
-    public void SpawnEnemy(Vector3 spawnPos)
+    [Header("Spawn Settings")]
+    [SerializeField] private float spawn_Padding = 9f;
+
+    void Awake()
     {
-        for (int i = 0; i < 3; i++)
+        if (gameManager == null)
         {
-
-            GameObject newHowitzer = Instantiate(Howitzer, spawnPos, Quaternion.identity, pool);
-            //AddObjectToList(howie);
-            gameManager.RegisterHowitzer(newHowitzer);
-
-            //Could use the spawnPos to update padding on the X by multiplying it by i.
-            spawnPos.x = spawnPos.x + spawn_Padding;
+            gameManager = FindAnyObjectByType<GameManager>();
         }
     }
 
-    private void AddObjectToList(GameObject gameObject)
+    public void SpawnEnemy(
+        Vector3 spawnPos,
+        int count = 3,
+        float spacing = 9f)
     {
-        gameManager.howitzers.Add(gameObject);
+        if (Howitzer == null)
+        {
+            Debug.LogError("Howitzer prefab is missing!");
+            return;
+        }
+
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager reference is missing!");
+            return;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            GameObject newHowitzer = Instantiate(
+                Howitzer,
+                spawnPos,
+                Quaternion.identity,
+                pool
+            );
+
+            gameManager.RegisterHowitzer(newHowitzer);
+
+            Debug.Log(
+                "Spawned Howitzer " + (i + 1) +
+                " at " + spawnPos
+            );
+
+            spawnPos.x += spacing;
+        }
     }
 }

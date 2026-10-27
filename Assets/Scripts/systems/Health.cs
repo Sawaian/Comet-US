@@ -5,11 +5,13 @@ using UnityEngine;
 public class Health : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 1;
+    [SerializeField] private float deathDelay = 0f;
 
     private int currentHealth;
     private bool isDead = false;
 
     public event Action<GameObject> OnDeath;
+    public event Action OnDamaged;
 
     void Awake()
     {
@@ -27,16 +29,21 @@ public class Health : MonoBehaviour
         {
             Die();
         }
+        else
+        {
+            OnDamaged?.Invoke();
+        }
     }
 
     private void Die()
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
         isDead = true;
 
         OnDeath?.Invoke(gameObject);
 
-        Destroy(gameObject);
+        Destroy(gameObject, deathDelay);
     }
 }

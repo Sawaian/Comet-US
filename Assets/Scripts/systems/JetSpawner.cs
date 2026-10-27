@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class JetSpawner : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private GameObject jetPrefab;
     [SerializeField] private Transform jetPool;
 
+    [Header("Wave Settings")]
     [SerializeField] private float formationDelay = 0.8f;
     [SerializeField] private float waveDelay = 2f;
 
@@ -15,7 +17,14 @@ public class JetSpawner : MonoBehaviour
 
     public void BeginJetWaves()
     {
-        if (started) return;
+        if (started)
+            return;
+
+        if (jetPrefab == null)
+        {
+            Debug.LogError("Jet prefab is missing!");
+            return;
+        }
 
         started = true;
         StartCoroutine(SpawnWaves());
@@ -29,6 +38,8 @@ public class JetSpawner : MonoBehaviour
 
         for (int wave = 1; wave <= 3; wave++)
         {
+            Debug.Log("Starting jet wave: " + wave);
+
             List<GameObject> activeJets =
                 new List<GameObject>();
 
@@ -41,20 +52,27 @@ public class JetSpawner : MonoBehaviour
 
                 activeJets.Add(jet);
 
-                // Jets enter in sequence.
+                // Jets enter one after another.
                 yield return new WaitForSeconds(
                     formationDelay
                 );
             }
 
-            // Wait until every jet in this wave dies.
+            // Wait until all jets in this wave die.
             yield return new WaitUntil(() =>
             {
                 activeJets.RemoveAll(jet => jet == null);
                 return activeJets.Count == 0;
             });
 
-            yield return new WaitForSeconds(waveDelay);
+            Debug.Log("Jet wave " + wave + " cleared");
+
+            if (wave < 3)
+            {
+                yield return new WaitForSeconds(
+                    waveDelay
+                );
+            }
         }
 
         Debug.Log("All jet waves completed!");

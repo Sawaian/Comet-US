@@ -17,20 +17,56 @@ public class JetPlane : MonoBehaviour
     [SerializeField] private float fireInterval = 1.5f;
     [SerializeField] private float bulletSpeed = 8f;
 
-    [Header("Health")]
-    [SerializeField] private int health = 3;
+    [Header("Components")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private Health health;
 
-    private enum FlightState { Entering, Looping, Exiting }
+    private enum FlightState
+    {
+        Entering,
+        Looping,
+        Exiting
+    }
 
     private FlightState state = FlightState.Entering;
+
     private float angle;
     private float nextShotTime;
+    private bool isDead = false;
+
+    void Awake()
+    {
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        if (health == null)
+            health = GetComponent<Health>();
+    }
+
+    void OnEnable()
+    {
+        if (health == null)
+            return;
+
+        health.OnDamaged += PlayHit;
+        health.OnDeath += PlayExplosion;
+    }
+
+    void OnDisable()
+    {
+        if (health == null)
+            return;
+
+        health.OnDamaged -= PlayHit;
+        health.OnDeath -= PlayExplosion;
+    }
 
     void Start()
     {
         if (player == null)
         {
             GameObject target = GameObject.FindWithTag("Player");
+
             if (target != null)
                 player = target.transform;
         }
@@ -40,6 +76,9 @@ public class JetPlane : MonoBehaviour
 
     void Update()
     {
+        if (isDead)
+            return;
+
         MoveJet();
 
         if (player != null &&
@@ -62,7 +101,10 @@ public class JetPlane : MonoBehaviour
                     float targetX = loopCenter.x - loopRadius;
 
                     position.x = Mathf.MoveTowards(
-                        position.x, targetX, speed * Time.deltaTime);
+                        position.x,
+                        targetX,
+                        speed * Time.deltaTime
+                    );
 
                     if (position.x >= targetX)
                     {
@@ -76,6 +118,7 @@ public class JetPlane : MonoBehaviour
             case FlightState.Looping:
                 {
                     float angularSpeed = speed / loopRadius;
+
                     angle += angularSpeed * Time.deltaTime;
 
                     position.x = loopCenter.x +
@@ -87,6 +130,7 @@ public class JetPlane : MonoBehaviour
                     if (angle >= 3f * Mathf.PI)
                     {
                         state = FlightState.Exiting;
+
                         position.x = loopCenter.x - loopRadius;
                         position.y = loopCenter.y;
                     }
@@ -123,10 +167,11 @@ public class JetPlane : MonoBehaviour
         angle = Mathf.PI;
     }
 
-
     void Fire()
     {
-        if (firePoint == null || projectile == null || player == null)
+        if (firePoint == null ||
+            projectile == null ||
+            player == null)
             return;
 
         Vector3 direction =
@@ -147,14 +192,22 @@ public class JetPlane : MonoBehaviour
         }
     }
 
-
-    public void Hit(int damage)
+    private void PlayHit()
     {
-        health -= damage;
+        if (animator == null)
+            return;
 
-        if (health <= 0)
-        {
-            Destroy(gameObject);
-        }
+        animator.SetTrigger("Jet_hit");
+    }
+
+    private void PlayExplosion(GameObject jet)
+    {
+        isDead = true;
+
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger("Jet_hit");
+        animator.SetTrigger("Jet_explosion");
     }
 }
