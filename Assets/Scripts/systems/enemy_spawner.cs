@@ -15,9 +15,10 @@ public class enemy_spawner : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
 
-            GameObject howie = Instantiate(Howitzer, spawnPos, Quaternion.identity, pool);
-            AddObjectToList(howie);
-          
+            GameObject newHowitzer = Instantiate(Howitzer, spawnPos, Quaternion.identity, pool);
+            //AddObjectToList(howie);
+            gameManager.RegisterHowitzer(newHowitzer);
+
             //Could use the spawnPos to update padding on the X by multiplying it by i.
             spawnPos.x = spawnPos.x + spawn_Padding;
         }

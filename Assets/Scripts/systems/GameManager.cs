@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public int numWall = 3;
     [SerializeField] public List<GameObject> walls = new List<GameObject>();
     [SerializeField] public List<GameObject> howitzers = new List<GameObject>();
+    [SerializeField] private JetSpawner jetSpawner;
 
     private int HowitzersAlive;
     private int gameScore;
@@ -23,14 +24,17 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (howitzers.Count < 1 && firstLevel && walls.Count > 0)
+        if (firstLevel && walls.Count > 0)
         {
             GameObject wall = walls[0];
-            walls.Remove(wall);
+
+            walls.RemoveAt(0);
             Destroy(wall);
+
+            jetSpawner.BeginJetWaves();
+
             firstLevel = false;
         }
-
     }
 
     void StartWave()
@@ -54,13 +58,29 @@ public class GameManager : MonoBehaviour
 
 
 
-    void AddHowitizersAlive(int addHowie)
+    public void RegisterHowitzer(GameObject howitzer)
     {
-        HowitzersAlive += addHowie;
+        if (!howitzers.Contains(howitzer))
+        {
+            howitzers.Add(howitzer);
+
+            Health health = howitzer.GetComponent<Health>();
+
+            if (health != null)
+            {
+                health.OnDeath += OnHowitzerDeath;
+            }
+        }
     }
 
-    void SubHowitzersAlive(int subHowie)
+    private void OnHowitzerDeath(GameObject howitzer)
     {
-        HowitzersAlive -= subHowie;
+        howitzers.Remove(howitzer);
+
+        if (howitzers.Count == 0)
+        {
+            firstLevel = true;
+        }
     }
+
 }
