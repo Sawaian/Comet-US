@@ -4,6 +4,8 @@ using UnityEngine;
 public class enemy_1 : MonoBehaviour
 {
     [SerializeField] Transform pool;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private Animator animator;
     GameObject GO;
     public GameObject projectile;
     public GameObject FireBox;
@@ -33,6 +35,7 @@ public class enemy_1 : MonoBehaviour
 
         GameObject bullet = Instantiate(projectile,FireBox.transform, pool);
         bullet.transform.position = FireBox.transform.position + Vector3.up * offset;
+        animator.SetTrigger("Fire");
         //Debug.Log("Spawned: " + bullet.name);
         //Debug.Log("Projectile script: " + bullet.GetComponent<projectile>());
 

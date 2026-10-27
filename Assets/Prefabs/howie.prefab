@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 5170084952289806206}
   - component: {fileID: 5371166597606758672}
   - component: {fileID: 5703991557748125468}
-  m_Layer: 0
+  - component: {fileID: 8867761421951197152}
+  - component: {fileID: 5518897716206072633}
+  m_Layer: 15
   m_Name: howie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,6 +52,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemy_1
   pool: {fileID: 0}
+  firePoint: {fileID: 0}
+  animator: {fileID: 8867761421951197152}
   projectile: {fileID: 2958744531561302009, guid: e1ce7bafb8d04224b9a05c5210644381, type: 3}
   FireBox: {fileID: 8176390960392790599}
   fireDelay: 2
@@ -101,8 +105,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.1892409, z: 1}
-  m_Center: {x: 0, y: 0.09462031, z: 0}
+  m_Size: {x: 1, y: 1.0039004, z: 1}
+  m_Center: {x: 0, y: 0.08459878, z: 0}
 --- !u!114 &5703991557748125468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +119,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d885bf209b829c448041050f1562049, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
+  gameManager: {fileID: 0}
+  Howie: {fileID: 0}
   health: 1
+--- !u!95 &8867761421951197152
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106240452530195949}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f69723a5e470d424db9b877fbee08083, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!212 &5518897716206072633
+SpriteRenderer:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106240452530195949}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 10
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 1474035672, guid: b1faaab30dc56b24a98f4e61b416b4c9, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!1 &6843627037507422495
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +215,7 @@ GameObject:
   - component: {fileID: 2337306405192505101}
   - component: {fileID: 2974309933075398758}
   - component: {fileID: 8858513015425807368}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: howitzer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +252,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6843627037507422495}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
