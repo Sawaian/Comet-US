@@ -584,10 +584,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   pool: {fileID: 808595684}
+  gameManager: {fileID: 1572306649}
   Howitzer: {fileID: 1106240452530195949, guid: e8d1171e8b4582b44b1dca52386a962e, type: 3}
   spawnPos: {x: -9, y: -18.5, z: 0}
   spawn_Padding: 9
-  howitzers: []
 --- !u!4 &808595684
 Transform:
   m_ObjectHideFlags: 0
@@ -698,6 +698,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9a11e2ab6b0d0f42b925be0182ad0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  enemySpawner: {fileID: 808595683}
+  howitzers: []
 --- !u!1001 &1656402683
 PrefabInstance:
   m_ObjectHideFlags: 0
