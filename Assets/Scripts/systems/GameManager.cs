@@ -1,10 +1,16 @@
 
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    [Header("UI")]
+    [SerializeField] private GameObject startPanel;
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private GameObject winPanel;
 
     [Header("Spawners")]
     [SerializeField] private enemy_spawner enemySpawner;
@@ -38,8 +44,21 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Time.timeScale = 1f;
         WallSpawn();
+
+        startPanel.SetActive(true);
+        gameOverPanel.SetActive(false);
+        winPanel.SetActive(false);
+
+        Time.timeScale = 0f;
+    }
+
+    public void PlayGame()
+    {
+        startPanel.SetActive(false);
+
+        Time.timeScale = 1f;
+
         StartPhase1();
     }
 
@@ -48,7 +67,11 @@ public class GameManager : MonoBehaviour
         if (gameOver) return;
 
         gameOver = true;
+
         Debug.Log("YOU WIN!");
+
+        winPanel.SetActive(true);
+
         Time.timeScale = 0f;
     }
 
@@ -57,9 +80,22 @@ public class GameManager : MonoBehaviour
         if (gameOver) return;
 
         gameOver = true;
+
         Debug.Log("GAME OVER!");
+
+        gameOverPanel.SetActive(true);
+
+        Time.timeScale = 0f;
     }
 
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+
+        SceneManager.LoadScene(
+            SceneManager.GetActiveScene().buildIndex
+        );
+    }
     private void WallSpawn()
     {
         for (int i = 0; i < numWall; i++)
