@@ -11,12 +11,10 @@ public class enemy_spawner : MonoBehaviour
     [Header("Spawn Settings")]
     [SerializeField] private float spawn_Padding = 9f;
 
-    void Awake()
+    private void Awake()
     {
         if (gameManager == null)
-        {
             gameManager = FindAnyObjectByType<GameManager>();
-        }
     }
 
     public void SpawnEnemy(
@@ -24,15 +22,9 @@ public class enemy_spawner : MonoBehaviour
         int count = 3,
         float spacing = 9f)
     {
-        if (Howitzer == null)
+        if (Howitzer == null || gameManager == null)
         {
-            Debug.LogError("Howitzer prefab is missing!");
-            return;
-        }
-
-        if (gameManager == null)
-        {
-            Debug.LogError("GameManager reference is missing!");
+            Debug.LogError("Spawner missing references!");
             return;
         }
 
@@ -45,7 +37,7 @@ public class enemy_spawner : MonoBehaviour
                 pool
             );
 
-            gameManager.RegisterHowitzer(newHowitzer);
+            gameManager.RegisterEnemy(newHowitzer);
 
             Debug.Log(
                 "Spawned Howitzer " + (i + 1) +

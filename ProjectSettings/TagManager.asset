@@ -9,6 +9,7 @@ TagManager:
   - boundary
   - laser
   - Wall
+  - WinBoundary
   layers:
   - Default
   - TransparentFX

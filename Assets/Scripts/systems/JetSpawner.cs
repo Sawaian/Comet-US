@@ -8,40 +8,58 @@ public class JetSpawner : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject jetPrefab;
     [SerializeField] private Transform jetPool;
+    [SerializeField] private GameManager gameManager;
 
     [Header("Wave Settings")]
     [SerializeField] private float formationDelay = 0.8f;
     [SerializeField] private float waveDelay = 2f;
 
+    [Header("Phase 3")]
+    [SerializeField] private float phase3SpeedMultiplier = 2f;
+
     private bool started = false;
 
-    public void BeginJetWaves()
+    private void Awake()
+    {
+        if (gameManager == null)
+            gameManager = FindAnyObjectByType<GameManager>();
+    }
+
+    public void BeginJetWaves(int phase = 2)
     {
         if (started)
             return;
 
-        if (jetPrefab == null)
+        if (jetPrefab == null || gameManager == null)
         {
-            Debug.LogError("Jet prefab is missing!");
+            Debug.LogError("JetSpawner missing references!");
             return;
         }
 
         started = true;
-        StartCoroutine(SpawnWaves());
+        StartCoroutine(SpawnWaves(phase));
     }
 
-    IEnumerator SpawnWaves()
+    private IEnumerator SpawnWaves(int phase)
     {
-        // Wave 1: one jet
-        // Wave 2: two jets
-        // Wave 3: three jets
+        float multiplier = phase == 3
+            ? Mathf.Max(1f, phase3SpeedMultiplier)
+            : 1f;
+
+        float currentFormationDelay =
+            formationDelay / multiplier;
+
+        float currentWaveDelay =
+            waveDelay / multiplier;
 
         for (int wave = 1; wave <= 3; wave++)
         {
-            Debug.Log("Starting jet wave: " + wave);
+            Debug.Log(
+                "Phase " + phase +
+                " - Starting jet wave: " + wave
+            );
 
-            List<GameObject> activeJets =
-                new List<GameObject>();
+            List<GameObject> activeJets = new();
 
             for (int i = 0; i < wave; i++)
             {
@@ -50,31 +68,54 @@ public class JetSpawner : MonoBehaviour
                     jetPool
                 );
 
+                // Set actual flight speed.
+                JetPlane controller =
+                    jet.GetComponent<JetPlane>();
+
+                if (controller != null)
+                    controller.SetPhase(phase);
+
+                // Register for phase completion.
+                gameManager.RegisterEnemy(jet);
+
                 activeJets.Add(jet);
 
-                // Jets enter one after another.
-                yield return new WaitForSeconds(
-                    formationDelay
-                );
+                // Overlapping jet arrivals.
+                if (i < wave - 1)
+                {
+                    yield return new WaitForSeconds(
+                        currentFormationDelay
+                    );
+                }
             }
 
-            // Wait until all jets in this wave die.
+            // Wait until all jets are destroyed.
             yield return new WaitUntil(() =>
             {
                 activeJets.RemoveAll(jet => jet == null);
                 return activeJets.Count == 0;
             });
 
-            Debug.Log("Jet wave " + wave + " cleared");
+            Debug.Log(
+                "Phase " + phase +
+                " - Jet wave " + wave + " cleared"
+            );
 
             if (wave < 3)
             {
                 yield return new WaitForSeconds(
-                    waveDelay
+                    currentWaveDelay
                 );
             }
         }
 
-        Debug.Log("All jet waves completed!");
+        Debug.Log(
+            "All Phase " + phase +
+            " jet waves completed!"
+        );
+
+        started = false;
+
+        gameManager.PhaseSpawningFinished();
     }
 }

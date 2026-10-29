@@ -1,55 +1,44 @@
-using Unity.VisualScripting;
+
+using System;
 using UnityEngine;
 
 public class Enemy_Health : MonoBehaviour
 {
-    [SerializeField] GameManager gameManager;
-    public int health = 1;
+    [SerializeField] private int health = 1;
+
     private int current_health;
-    void Awake()
+    private bool isDead = false;
+
+    public event Action<GameObject> OnDeath;
+
+    private void Awake()
     {
         current_health = health;
-        gameManager = FindAnyObjectByType<GameManager>();
-    }
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void hit(int damage)
     {
+        if (isDead || damage <= 0)
+            return;
+
         current_health -= damage;
-        if (current_health < 1)
+
+        if (current_health <= 0)
         {
             Die();
         }
     }
 
-    void allDead()
+    private void Die()
     {
-        if(gameManager.howitzers.Count < 1)
-        {
-            gameManager.firstLevel = true;
-        }
-    }
+        if (isDead) return;
 
-    void Die()
-    {
-        Debug.Log("Die called");
+        isDead = true;
 
-        for(int i = 0; i < gameManager.howitzers.Count; i++)
-        {
-            if(this.gameObject == gameManager.howitzers[i])
-            {
-                Debug.Log("Object: " + this.gameObject);
+        Debug.Log("Enemy destroyed: " + gameObject.name);
 
-                gameManager.howitzers.RemoveAt(i);
-                Destroy(this.gameObject);
-                allDead();
+        OnDeath?.Invoke(gameObject);
 
-                return;
-            }
-        }
+        Destroy(gameObject);
     }
 }

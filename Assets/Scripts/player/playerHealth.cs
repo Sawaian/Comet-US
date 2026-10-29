@@ -2,34 +2,37 @@ using UnityEngine;
 
 public class playerHealth : MonoBehaviour
 {
-
     public int health = 3;
-    GameObject projectile;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    [Header("Debug")]
+    [SerializeField] private bool invulnerable = false;
+
+    private bool isDead = false;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("bullet"))
         {
-            health--;
-            healthCheck(health);
+            TakeDamage(1);
             Destroy(other.gameObject);
         }
     }
 
     public void TakeDamage(int damage)
     {
-        health = health - damage;
-        healthCheck(health);
+        if (isDead || invulnerable) return;
+
+        health -= damage;
+        healthCheck();
     }
 
-
-    void healthCheck(int health)
+    void healthCheck()
     {
-        
-        if (health < 1) 
+        if (health <= 0)
         {
-            //Debug.Log("ship destroyed" );
+            isDead = true;
+            GameManager.Instance.LoseGame();
+            Destroy(gameObject);
         }
     }
 }

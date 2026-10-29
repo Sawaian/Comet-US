@@ -177,6 +177,7 @@ MonoBehaviour:
   loopCenter: {x: 0, y: 2}
   leftEdge: -12
   rightEdge: 12
+  phase3SpeedMultiplier: 2
   player: {fileID: 5715616971820478002, guid: 572d8147f857e094a95044af62469603, type: 3}
   firePoint: {fileID: 2925646308648988527}
   projectile: {fileID: 6495040774972885200, guid: c02c8304757898e41aac44b94666f904, type: 3}
@@ -246,8 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc126d28026b0e34784305c8279383da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 1
-  deathDelay: 0
+  health: 2
 --- !u!95 &3534367552431481278
 Animator:
   serializedVersion: 7

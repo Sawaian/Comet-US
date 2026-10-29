@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 1;
-    [SerializeField] private float deathDelay = 0f;
+    [SerializeField] private int health = 1;
 
     private int currentHealth;
     private bool isDead = false;
@@ -13,9 +12,9 @@ public class Health : MonoBehaviour
     public event Action<GameObject> OnDeath;
     public event Action OnDamaged;
 
-    void Awake()
+    private void Awake()
     {
-        currentHealth = maxHealth;
+        currentHealth = health;
     }
 
     public void hit(int damage)
@@ -25,25 +24,28 @@ public class Health : MonoBehaviour
 
         currentHealth -= damage;
 
+        Debug.Log(gameObject.name + " HP remaining: " + currentHealth);
+
+        OnDamaged?.Invoke();
+
         if (currentHealth <= 0)
-        {
             Die();
-        }
-        else
-        {
-            OnDamaged?.Invoke();
-        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        hit(damage);
     }
 
     private void Die()
     {
-        if (isDead)
-            return;
+        if (isDead) return;
 
         isDead = true;
 
-        OnDeath?.Invoke(gameObject);
+        Debug.Log("Enemy destroyed: " + gameObject.name);
 
-        Destroy(gameObject, deathDelay);
+        OnDeath?.Invoke(gameObject);
+        Destroy(gameObject);
     }
 }

@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     [Header("Spawners")]
     [SerializeField] private enemy_spawner enemySpawner;
     [SerializeField] private JetSpawner jetSpawner;
+    [SerializeField] private MissileTruckSpawner missileTruckSpawner;
 
-    [Header("Walls")]
+    [Header("Shields")]
     [SerializeField] private GameObject Wall;
     [SerializeField]
     private Vector3 wallPos =
@@ -16,52 +19,48 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float wallSpacing = -15f;
     [SerializeField] private int numWall = 3;
 
-    [SerializeField]
-    public List<GameObject> walls =
-        new List<GameObject>();
+    [SerializeField] private List<GameObject> walls = new();
 
-    [SerializeField]
-    public List<GameObject> howitzers =
-        new List<GameObject>();
+    [Header("Enemy Tracking")]
+    [SerializeField] private List<GameObject> activeEnemies = new();
 
-    private int gameScore;
-    private int currentPhase = 1;
+    [Header("Game State")]
+    [SerializeField] private int currentPhase = 1;
 
-    public bool firstLevel = false;
+    private bool gameOver = false;
+    private bool phaseSpawningComplete = false;
+    private bool phaseCleared = false;
 
-    void Start()
+    private void Awake()
     {
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        Time.timeScale = 1f;
         WallSpawn();
-        StartWave();
+        StartPhase1();
     }
 
-    void Update()
+    public void WinGame()
     {
-        if (firstLevel && currentPhase == 1)
-        {
-            firstLevel = false;
+        if (gameOver) return;
 
-            // Destroy first defensive wall.
-            if (walls.Count > 0)
-            {
-                GameObject wall = walls[0];
-                walls.RemoveAt(0);
-                Destroy(wall);
-            }
-
-            StartPhase2();
-        }
+        gameOver = true;
+        Debug.Log("YOU WIN!");
+        Time.timeScale = 0f;
     }
 
-    void StartWave()
+    public void LoseGame()
     {
-        enemySpawner.SpawnEnemy(
-            new Vector3(-9f, -18.5f, 0f),
-            3
-        );
+        if (gameOver) return;
+
+        gameOver = true;
+        Debug.Log("GAME OVER!");
     }
 
-    void WallSpawn()
+    private void WallSpawn()
     {
         for (int i = 0; i < numWall; i++)
         {
@@ -78,65 +77,164 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RegisterHowitzer(GameObject howitzer)
+    private void DestroyNextShield()
     {
-        if (howitzer == null)
+        if (walls.Count == 0)
             return;
 
-        Health health = howitzer.GetComponent<Health>();
+        GameObject wall = walls[0];
+        walls.RemoveAt(0);
+
+        if (wall != null)
+            Destroy(wall);
+
+        Debug.Log("Shield destroyed!");
+    }
+
+    public void RegisterEnemy(GameObject enemy)
+    {
+        if (enemy == null || gameOver || phaseCleared)
+            return;
+
+        Health health = enemy.GetComponent<Health>();
 
         if (health == null)
         {
             Debug.LogError(
-                "Howitzer missing Health component: " +
-                howitzer.name
+                "Enemy missing Health: " + enemy.name
             );
             return;
         }
 
-        if (howitzers.Contains(howitzer))
+        if (activeEnemies.Contains(enemy))
             return;
 
-        howitzers.Add(howitzer);
-        health.OnDeath += OnHowitzerDeath;
+        activeEnemies.Add(enemy);
+        health.OnDeath += OnEnemyDeath;
     }
 
-    private void OnHowitzerDeath(GameObject howitzer)
+    public void RegisterHowitzer(GameObject howitzer)
     {
-        howitzers.Remove(howitzer);
+        RegisterEnemy(howitzer);
+    }
+
+    private void OnEnemyDeath(GameObject enemy)
+    {
+        if (gameOver) return;
+
+        if (!activeEnemies.Remove(enemy))
+            return;
 
         Debug.Log(
-            "Howitzers remaining: " + howitzers.Count
+            "Enemies remaining: " + activeEnemies.Count
         );
 
-        if (howitzers.Count == 0 && currentPhase == 1)
+        CheckPhaseClear();
+    }
+
+    public void PhaseSpawningFinished()
+    {
+        if (gameOver || phaseCleared)
+            return;
+
+        phaseSpawningComplete = true;
+        CheckPhaseClear();
+    }
+
+    private void CheckPhaseClear()
+    {
+        if (gameOver || phaseCleared)
+            return;
+
+        if (!phaseSpawningComplete ||
+            activeEnemies.Count > 0)
+            return;
+
+        phaseCleared = true;
+
+        Debug.Log(
+            "PHASE " + currentPhase + " CLEARED!"
+        );
+
+        DestroyNextShield();
+
+        switch (currentPhase)
         {
-            firstLevel = true;
+            case 1:
+                StartPhase2();
+                break;
+
+            case 2:
+                StartPhase3();
+                break;
+
+            case 3:
+                Debug.Log("ALL PHASES CLEARED!");
+                break;
         }
     }
 
+    private void PreparePhase(int phase)
+    {
+        currentPhase = phase;
+
+        activeEnemies.Clear();
+        phaseSpawningComplete = false;
+        phaseCleared = false;
+    }
+
+    private void StartPhase1()
+    {
+        PreparePhase(1);
+
+        Debug.Log("STARTING PHASE 1");
+
+        enemySpawner.SpawnEnemy(
+            new Vector3(-9f, -18.5f, 0f),
+            3
+        );
+
+        PhaseSpawningFinished();
+    }
 
     public void StartPhase2()
     {
-        if (currentPhase != 1)
+        if (gameOver || currentPhase != 1)
             return;
 
-        currentPhase = 2;
-        firstLevel = false;
+        PreparePhase(2);
 
         Debug.Log("STARTING PHASE 2");
 
-        // Five Howitzers in a compact formation.
         enemySpawner.SpawnEnemy(
             new Vector3(-6f, -18.5f, 0f),
             5,
             3f
         );
 
-        // Jets begin at the same time.
-        jetSpawner.BeginJetWaves();
-
-        Debug.Log("Phase 2 Howitzers: " + howitzers.Count);
+        jetSpawner.BeginJetWaves(2);
     }
 
+    public void StartPhase3()
+    {
+        if (gameOver || currentPhase != 2)
+            return;
+
+        PreparePhase(3);
+
+        Debug.Log("STARTING PHASE 3");
+
+        // Five Howitzers.
+        enemySpawner.SpawnEnemy(
+            new Vector3(-6f, -18.5f, 0f),
+            5,
+            3f
+        );
+
+        // Two Missile Trucks.
+        missileTruckSpawner.BeginWaves();
+
+        // Faster jet waves.
+        jetSpawner.BeginJetWaves(3);
+    }
 }

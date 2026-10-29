@@ -10,6 +10,9 @@ public class JetPlane : MonoBehaviour
     [SerializeField] private float leftEdge = -12f;
     [SerializeField] private float rightEdge = 12f;
 
+    [Header("Phase 3")]
+    [SerializeField] private float phase3SpeedMultiplier = 2f;
+
     [Header("Shooting")]
     [SerializeField] private Transform player;
     [SerializeField] private Transform firePoint;
@@ -32,10 +35,13 @@ public class JetPlane : MonoBehaviour
 
     private float angle;
     private float nextShotTime;
+    private float currentSpeed;
     private bool isDead = false;
 
-    void Awake()
+    private void Awake()
     {
+        currentSpeed = speed;
+
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
@@ -43,7 +49,7 @@ public class JetPlane : MonoBehaviour
             health = GetComponent<Health>();
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (health == null)
             return;
@@ -52,7 +58,7 @@ public class JetPlane : MonoBehaviour
         health.OnDeath += PlayExplosion;
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (health == null)
             return;
@@ -61,11 +67,12 @@ public class JetPlane : MonoBehaviour
         health.OnDeath -= PlayExplosion;
     }
 
-    void Start()
+    private void Start()
     {
         if (player == null)
         {
-            GameObject target = GameObject.FindWithTag("Player");
+            GameObject target =
+                GameObject.FindWithTag("Player");
 
             if (target != null)
                 player = target.transform;
@@ -74,7 +81,14 @@ public class JetPlane : MonoBehaviour
         ResetFlight();
     }
 
-    void Update()
+    public void SetPhase(int phase)
+    {
+        currentSpeed = phase == 3
+            ? speed * phase3SpeedMultiplier
+            : speed;
+    }
+
+    private void Update()
     {
         if (isDead)
             return;
@@ -90,7 +104,7 @@ public class JetPlane : MonoBehaviour
         }
     }
 
-    void MoveJet()
+    private void MoveJet()
     {
         Vector3 position = transform.position;
 
@@ -98,15 +112,18 @@ public class JetPlane : MonoBehaviour
         {
             case FlightState.Entering:
                 {
-                    float targetX = loopCenter.x - loopRadius;
+                    float targetX =
+                        loopCenter.x - loopRadius;
 
                     position.x = Mathf.MoveTowards(
                         position.x,
                         targetX,
-                        speed * Time.deltaTime
+                        currentSpeed * Time.deltaTime
                     );
 
-                    if (position.x >= targetX)
+                    // Works even when the jet enters
+                    // from farther offscreen.
+                    if (Mathf.Abs(position.x - targetX) < 0.01f)
                     {
                         state = FlightState.Looping;
                         angle = Mathf.PI;
@@ -117,21 +134,26 @@ public class JetPlane : MonoBehaviour
 
             case FlightState.Looping:
                 {
-                    float angularSpeed = speed / loopRadius;
+                    float angularSpeed =
+                        currentSpeed / loopRadius;
 
                     angle += angularSpeed * Time.deltaTime;
 
-                    position.x = loopCenter.x +
-                                 Mathf.Cos(angle) * loopRadius;
+                    position.x =
+                        loopCenter.x +
+                        Mathf.Cos(angle) * loopRadius;
 
-                    position.y = loopCenter.y +
-                                 Mathf.Sin(angle) * loopRadius;
+                    position.y =
+                        loopCenter.y +
+                        Mathf.Sin(angle) * loopRadius;
 
                     if (angle >= 3f * Mathf.PI)
                     {
                         state = FlightState.Exiting;
 
-                        position.x = loopCenter.x - loopRadius;
+                        position.x =
+                            loopCenter.x - loopRadius;
+
                         position.y = loopCenter.y;
                     }
 
@@ -140,7 +162,8 @@ public class JetPlane : MonoBehaviour
 
             case FlightState.Exiting:
                 {
-                    position.x += speed * Time.deltaTime;
+                    position.x +=
+                        currentSpeed * Time.deltaTime;
 
                     if (position.x >= rightEdge)
                     {
@@ -155,7 +178,7 @@ public class JetPlane : MonoBehaviour
         transform.position = position;
     }
 
-    void ResetFlight()
+    private void ResetFlight()
     {
         transform.position = new Vector3(
             leftEdge,
@@ -167,7 +190,7 @@ public class JetPlane : MonoBehaviour
         angle = Mathf.PI;
     }
 
-    void Fire()
+    private void Fire()
     {
         if (firePoint == null ||
             projectile == null ||
@@ -175,7 +198,8 @@ public class JetPlane : MonoBehaviour
             return;
 
         Vector3 direction =
-            (player.position - firePoint.position).normalized;
+            (player.position -
+             firePoint.position).normalized;
 
         GameObject bullet = Instantiate(
             projectile,
@@ -188,7 +212,10 @@ public class JetPlane : MonoBehaviour
 
         if (jetBullet != null)
         {
-            jetBullet.SetDirection(direction, bulletSpeed);
+            jetBullet.SetDirection(
+                direction,
+                bulletSpeed
+            );
         }
     }
 
