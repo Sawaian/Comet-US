@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject winPanel;
 
+    [Header("HUD")]
+    [SerializeField] private GameObject playerLives;
+
     [Header("Spawners")]
     [SerializeField] private enemy_spawner enemySpawner;
     [SerializeField] private JetSpawner jetSpawner;
@@ -27,6 +30,14 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> walls = new();
 
+    [Header("Shield Audio")]
+    [SerializeField] private AudioSource shieldAudioSource;
+    [SerializeField] private AudioClip shieldDestroySound;
+
+    [Header("Victory Audio")]
+    [SerializeField] private AudioSource victoryAudioSource;
+    [SerializeField] private AudioClip victorySound;
+
     [Header("Enemy Tracking")]
     [SerializeField] private List<GameObject> activeEnemies = new();
 
@@ -36,6 +47,8 @@ public class GameManager : MonoBehaviour
     private bool gameOver = false;
     private bool phaseSpawningComplete = false;
     private bool phaseCleared = false;
+    private bool gameStarted = false;
+    private bool allPhasesCleared = false;
 
     private void Awake()
     {
@@ -49,13 +62,19 @@ public class GameManager : MonoBehaviour
         startPanel.SetActive(true);
         gameOverPanel.SetActive(false);
         winPanel.SetActive(false);
+        playerLives.SetActive(false);
 
         Time.timeScale = 0f;
     }
 
     public void PlayGame()
     {
+        if (gameOver || gameStarted) return;
+
+        gameStarted = true;
+
         startPanel.SetActive(false);
+        playerLives.SetActive(true);
 
         Time.timeScale = 1f;
 
@@ -64,13 +83,21 @@ public class GameManager : MonoBehaviour
 
     public void WinGame()
     {
-        if (gameOver) return;
+        if (gameOver || !allPhasesCleared) return;
 
         gameOver = true;
 
         Debug.Log("YOU WIN!");
 
+        playerLives.SetActive(false);
         winPanel.SetActive(true);
+
+        // Play victory sound.
+        if (victoryAudioSource != null &&
+            victorySound != null)
+        {
+            victoryAudioSource.PlayOneShot(victorySound);
+        }
 
         Time.timeScale = 0f;
     }
@@ -83,6 +110,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("GAME OVER!");
 
+        playerLives.SetActive(false);
         gameOverPanel.SetActive(true);
 
         Time.timeScale = 0f;
@@ -96,8 +124,11 @@ public class GameManager : MonoBehaviour
             SceneManager.GetActiveScene().buildIndex
         );
     }
+
     private void WallSpawn()
     {
+        walls.Clear();
+
         for (int i = 0; i < numWall; i++)
         {
             Vector3 spawnPos = wallPos +
@@ -122,7 +153,17 @@ public class GameManager : MonoBehaviour
         walls.RemoveAt(0);
 
         if (wall != null)
+        {
             Destroy(wall);
+
+            if (shieldAudioSource != null &&
+                shieldDestroySound != null)
+            {
+                shieldAudioSource.PlayOneShot(
+                    shieldDestroySound
+                );
+            }
+        }
 
         Debug.Log("Shield destroyed!");
     }
@@ -146,6 +187,7 @@ public class GameManager : MonoBehaviour
             return;
 
         activeEnemies.Add(enemy);
+
         health.OnDeath += OnEnemyDeath;
     }
 
@@ -174,6 +216,7 @@ public class GameManager : MonoBehaviour
             return;
 
         phaseSpawningComplete = true;
+
         CheckPhaseClear();
     }
 
@@ -205,7 +248,10 @@ public class GameManager : MonoBehaviour
                 break;
 
             case 3:
-                Debug.Log("ALL PHASES CLEARED!");
+                allPhasesCleared = true;
+                Debug.Log(
+                    "ALL PHASES CLEARED! REACH THE GROUND!"
+                );
                 break;
         }
     }

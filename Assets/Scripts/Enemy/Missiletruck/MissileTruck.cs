@@ -14,6 +14,10 @@ public class MissileTruck : MonoBehaviour
     [SerializeField] private int bulletCount = 5;
     [SerializeField] private float spread = 0.3f;
 
+    [Header("Shooting Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip shootSound;
+
     [Header("Animation")]
     [SerializeField] private Animator animator;
 
@@ -74,6 +78,9 @@ public class MissileTruck : MonoBehaviour
 
     private void Fire()
     {
+
+        int volleyIndex = BulletColorCycle.NextVolley();
+
         if (bulletPrefab == null || firePoint == null)
             return;
 
@@ -92,6 +99,20 @@ public class MissileTruck : MonoBehaviour
                 firePoint.position,
                 Quaternion.identity
             );
+
+            BulletColorCycle bulletColor =
+             bullet.GetComponent<BulletColorCycle>();
+
+            if (bulletColor != null)
+            {
+                bulletColor.SetVolleyColor(volleyIndex);
+            }
+
+
+            if (audioSource != null && shootSound != null)
+            {
+                audioSource.PlayOneShot(shootSound);
+            }
 
             SnakeBullet movement =
                 bullet.GetComponent<SnakeBullet>();

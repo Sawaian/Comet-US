@@ -20,6 +20,10 @@ public class JetPlane : MonoBehaviour
     [SerializeField] private float fireInterval = 1.5f;
     [SerializeField] private float bulletSpeed = 8f;
 
+    [Header("Shooting Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip shootSound;
+
     [Header("Components")]
     [SerializeField] private Animator animator;
     [SerializeField] private Health health;
@@ -206,6 +210,11 @@ public class JetPlane : MonoBehaviour
             firePoint.position,
             Quaternion.identity
         );
+
+        if (audioSource != null && shootSound != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
 
         JetProjectile jetBullet =
             bullet.GetComponent<JetProjectile>();

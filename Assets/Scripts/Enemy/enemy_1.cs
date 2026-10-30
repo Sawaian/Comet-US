@@ -6,6 +6,10 @@ public class enemy_1 : MonoBehaviour
     [SerializeField] Transform pool;
     [SerializeField] private Transform firePoint;
     [SerializeField] private Animator animator;
+
+    [Header("Shooting Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip shootSound;
     GameObject GO;
     public GameObject projectile;
     public GameObject FireBox;
@@ -34,6 +38,10 @@ public class enemy_1 : MonoBehaviour
         }
 
         GameObject bullet = Instantiate(projectile,FireBox.transform, pool);
+        if (audioSource != null && shootSound != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
         bullet.transform.position = FireBox.transform.position + Vector3.up * offset;
         animator.SetTrigger("Fire");
         //Debug.Log("Spawned: " + bullet.name);
